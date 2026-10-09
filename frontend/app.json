@@ -24,6 +24,9 @@
       "expo-image",
       "expo-video",
       "expo-font"
-    ]
+    ],
+    "experiments": {
+      "baseUrl": "/quartel-general-brasilia"
+    }
   }
 }
