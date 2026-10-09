@@ -75,7 +75,7 @@ export default function App() {
         </View>
 
         <Image
-          source={require('./assets/hist/O Quartel General do Exército (QGEx), denominado historicamente de Forte Caxias, é o edifício-se.jpg')}
+          source={require('./assets/hist/qgex1.jpg')}
           style={isDesktop ? styles.imgDesktop : styles.imgMobile}
           contentFit='cover'
         />
