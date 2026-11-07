@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View, ScrollView, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, useWindowDimensions, Platform } from 'react-native';
 
 // Expo
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 
-//  Fonts
+// Fonts
 import { useFonts, RobotoCondensed_100Thin, RobotoCondensed_500Medium } from '@expo-google-fonts/roboto-condensed';
 import { Plaster_400Regular } from '@expo-google-fonts/plaster';
 
@@ -12,18 +12,16 @@ export default function App() {
   const { width } = useWindowDimensions();
   const isDesktop = width > 768;
 
-  // Responsive banner font size
   const getFontSize = () => {
-    if (width > 1024) return 56; // Big desktop
-    if (width > 768) return 40;  // Tablet or small desktop
-    return 28;                   // Cell phone
+    if (width > 1024) return 56;
+    if (width > 768) return 40;
+    return 28;
   };
 
-  // Responsive banner size
   const getBannerHeight = () => {
-    if (width > 1024) return 450; // Big desk
-    if (width > 768) return 350;  // Tab/small desk
-    return 220;                   // Phone
+    if (width > 1024) return 450;
+    if (width > 768) return 350;
+    return 220;
   };
 
   const [fontsLoaded] = useFonts({
@@ -32,9 +30,7 @@ export default function App() {
     Plaster_400Regular,
   });
 
-  if (!fontsLoaded) {
-    return null;
-  };
+  if (!fontsLoaded) return null;
 
   const fontSize = getFontSize();
   const bannerHeight = getBannerHeight();
@@ -49,10 +45,19 @@ export default function App() {
         />
 
         <LinearGradient
-          colors={['transparent', 'rgba(0, 0, 0, 0.75)']}
-          start={{ x: 1, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.gradientOverlay}
+          colors={[
+            'transparent',
+            'transparent',
+            'rgba(0, 0, 0, 0.4)',
+            'rgba(0, 0, 0, 0.75)',
+            'rgba(245, 245, 245, 0.3)',
+            'rgba(245, 245, 245, 0.85)',
+            '#f5f5f5'
+          ]}
+          locations={[0, 0.3, 0.5, 0.7, 0.85, 0.95, 1]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={styles.bannerGradient}
         >
           <Text style={[styles.title, { fontSize, lineHeight: fontSize * 1.15 }]}>
             <Text style={styles.txtThin}>Conheça o </Text>
@@ -63,10 +68,32 @@ export default function App() {
         </LinearGradient>
       </View>
 
+      {/* Subcontainer 1: Videoclipe do YouTube (Web iFrame) */}
+      <View style={[styles.subContainer, { flexDirection: isDesktop ? 'row' : 'column' }]}>
+        <View style={isDesktop ? styles.videoDesktopLarge : styles.videoMobileLarge}>
+          {Platform.OS === 'web' ? (
+            <iframe
+              src="https://www.youtube.com/embed/RW7Vqskmmas"
+              style={{ width: '100%', height: '100%', border: 'none' }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : null}
+        </View>
+
+        <View style={styles.textWrapper}>
+          <Text style={styles.title2}>Alegria, Alegria</Text>
+          <Text style={styles.txt}>
+            "Caminhando contra o vento, sem lenço e sem documento", trazemos nossa releitura visual inspirada no clássico de Caetano Veloso.{'\n\n'}
+            Este videoclipe foi desenvolvido como parte de um projeto escolar vibrante, misturando a genialidade da Tropicália com a imponente arquitetura modernista de Brasília para questionar, sentir e celebrar a nossa cultura!
+          </Text>
+        </View>
+      </View>
+
+      {/* Subcontainer 2: História */}
       <View style={[styles.subContainer, { flexDirection: isDesktop ? 'row' : 'column' }]}>
         <View style={styles.textWrapper}>
           <Text style={styles.title2}>História</Text>
-          
           <Text style={styles.txt}>
             A criação de Brasília, planejada por Juscelino Kubitschek (1902-1976), foi parte do plano de interiorizar o desenvolvimento do país.{'\n\n'}
             A estrutura do QGEx (Quartel General do Exército) foi realizada como parte da transferência dos principais órgãos do governo e comandos militares para a nova capital federal.{'\n\n'}
@@ -81,6 +108,7 @@ export default function App() {
         />
       </View>
 
+      {/* Subcontainer 3: Autor do Projeto */}
       <View style={[styles.subContainer, { flexDirection: isDesktop ? 'row' : 'column' }]}>
         <Image
           source={require('./assets/cult_niemeyer.jpg')}
@@ -90,9 +118,8 @@ export default function App() {
 
         <View style={styles.textWrapper}>
           <Text style={styles.title2}>Autor do Projeto</Text>
-
           <Text style={styles.txt}>
-            O projeto foi concebido por Oscar Niemeyer (1907-2012), renomado arquiteto brasileiro, reconhecido por suas obras obras modernistas.{'\n\n'}
+            O projeto foi concebido por Oscar Niemeyer (1907-2012), renomado arquiteto brasileiro, reconhecido por suas obras modernistas.{'\n\n'}
             Além do QGEx e outras obras em Brasília (como o Congresso Nacional e a Catedral de Brasília), Niemeyer também é conhecido por diversas outras contruções mundo a fora, como a Sede das Nações Unidas, a Editora Mondadori e, no Brasil, a Pampulha.
           </Text>
         </View>
@@ -113,7 +140,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '100%',
     maxWidth: 1100,
-
     overflow: 'hidden',
     borderRadius: 16
   },
@@ -122,40 +148,32 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24
   },
-  
-  rowContent: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 16
-  },
 
-  // Banner
   bannerCard: {
     width: '100%',
-    height: '66.6%',
     overflow: 'hidden',
     position: 'relative',
   },
 
-  gradientOverlay: {
+  bannerGradient: {
     position: 'absolute',
-    bottom: 0,
     left: 0,
     right: 0,
-    height: '100%',
+    top: 0,
+    bottom: 0,
     justifyContent: 'flex-end',
-    padding: 16,
+    padding: 24,
+    paddingBottom: 36,
   },
 
-  // Text
   title: {
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    textShadow: '0px 2px 6px rgba(0, 0, 0, 0.5)',
   },
 
   title2: {
     fontSize: 32,
     fontFamily: 'Plaster_400Regular',
-
     marginBottom: 16
   },
   
@@ -176,12 +194,23 @@ const styles = StyleSheet.create({
 
   imgDesktop: {
     width: '45%',
-
     alignSelf: 'stretch'
   },
 
   imgMobile: {
     width: '100%',
     height: 220
+  },
+
+  // Container para o iframe no Web
+  videoDesktopLarge: {
+    width: '55%',
+    minHeight: 340,
+    alignSelf: 'stretch'
+  },
+
+  videoMobileLarge: {
+    width: '100%',
+    height: 240
   }
 });
